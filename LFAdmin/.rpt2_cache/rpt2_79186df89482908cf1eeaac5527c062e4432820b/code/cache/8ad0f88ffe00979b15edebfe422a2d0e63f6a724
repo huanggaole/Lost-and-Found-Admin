@@ -1,0 +1,6 @@
+{
+  "code": "import GameScene from \"./GameScene\";\r\nexport default class StartScene extends Laya.Scene {\r\n    createChildren() {\r\n        super.createChildren();\r\n        this.loadScene(\"StartScene.scene\");\r\n    }\r\n    onAwake() {\r\n        this.startBtn.on(Laya.Event.CLICK, this, () => {\r\n            const gs = new GameScene();\r\n            Laya.stage.addChild(gs);\r\n        });\r\n    }\r\n}\r\n",
+  "references": [
+    "/Users/huanggaole/LFAdmin/src/scene/GameScene.ts"
+  ]
+}

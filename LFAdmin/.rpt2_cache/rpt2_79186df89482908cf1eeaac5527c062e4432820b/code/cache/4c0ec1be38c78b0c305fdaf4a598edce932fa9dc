@@ -1,0 +1,4 @@
+{
+  "code": "export default class Item extends Laya.Script {\r\n    onStart() {\r\n        super.onStart();\r\n        this.owner.on(Laya.Event.MOUSE_DOWN, this, () => { Item.selectedItem = this.owner; });\r\n    }\r\n}\r\n",
+  "references": []
+}

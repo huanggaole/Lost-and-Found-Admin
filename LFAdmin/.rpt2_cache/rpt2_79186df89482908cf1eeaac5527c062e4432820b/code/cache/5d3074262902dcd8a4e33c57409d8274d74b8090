@@ -1,0 +1,6 @@
+{
+  "code": "import Item from \"./Item\";\r\nexport default class Aid extends Laya.Script {\r\n    onTriggerEnter(other) {\r\n        for (let i = 0; i < Aid.aidItems.length; i++) {\r\n            if (other.owner.name == Aid.aidItems[i]) {\r\n                Aid.aidItems = Aid.aidItems.filter(item => item != Aid.aidItems[i]);\r\n                other.owner.destroy();\r\n                Item.selectedItem = null;\r\n            }\r\n        }\r\n    }\r\n}\r\nAid.aidItems = [\"s1\"];\r\n",
+  "references": [
+    "/Users/huanggaole/LFAdmin/src/script/Item.ts"
+  ]
+}

@@ -1,0 +1,4 @@
+{
+  "code": "export default class StartScene extends Laya.Scene {\r\n    createChildren() {\r\n        super.createChildren();\r\n        this.loadScene(\"StartScene.scene\");\r\n    }\r\n    onAwake() {\r\n        this.startBtn.on(Laya.Event.CLICK, this, () => {\r\n        });\r\n    }\r\n}\r\n",
+  "references": []
+}

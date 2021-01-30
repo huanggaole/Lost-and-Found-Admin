@@ -1,0 +1,4 @@
+{
+  "code": "export default class Aid extends Laya.Script {\r\n    onTriggerEnter(other) {\r\n        if (other.owner.name == \"s1\") {\r\n            other.owner.destroy();\r\n        }\r\n    }\r\n}\r\n",
+  "references": []
+}

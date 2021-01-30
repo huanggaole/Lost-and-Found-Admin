@@ -1,0 +1,4 @@
+{
+  "code": "export default class Customer extends Laya.Script {\r\n    onStart() {\r\n        super.onStart();\r\n    }\r\n    onAwake() {\r\n        super.onAwake();\r\n        console.log(this.owner);\r\n        console.log(this.owner.getChildByName(\"timleft\"));\r\n        this.timeleft = this.owner.getChildByName(\"timleft\");\r\n        this.lostItem = this.owner.getChildByName(\"lostItem\");\r\n        this.timeleft.text = \"耐心：90\";\r\n    }\r\n}\r\n",
+  "references": []
+}
