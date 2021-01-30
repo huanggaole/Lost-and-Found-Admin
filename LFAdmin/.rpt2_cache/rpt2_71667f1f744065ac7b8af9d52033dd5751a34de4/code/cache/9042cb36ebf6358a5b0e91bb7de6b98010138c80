@@ -1,0 +1,7 @@
+{
+  "code": "import GameScene from \"./GameScene\";\r\nimport ConfigScene from \"./configScene\";\r\nvar Sprite = Laya.Sprite;\r\nexport default class StartScene extends Laya.Scene {\r\n    createChildren() {\r\n        super.createChildren();\r\n        this.loadScene(\"StartScene.scene\");\r\n    }\r\n    showBGImage() {\r\n        let ape = new Sprite();\r\n        ape.pos(0, 0);\r\n        Laya.stage.addChild(ape);\r\n        ape.loadImage(\"comp/tempBG.jpg\");\r\n    }\r\n    hiddenStartScene() {\r\n        this.startBtn.visible = false;\r\n        this.backGround.visible = false;\r\n        this.confBtn.visible = false;\r\n    }\r\n    onAwake() {\r\n        this.startBtn.on(Laya.Event.CLICK, this, () => {\r\n            const gs = new GameScene();\r\n            Laya.stage.addChild(gs);\r\n            this.hiddenStartScene();\r\n        });\r\n        this.startBtn.on(Laya.Event.CLICK, this, () => {\r\n            const cs = new ConfigScene();\r\n            Laya.stage.addChild(cs);\r\n            this.hiddenStartScene();\r\n        });\r\n    }\r\n}\r\n",
+  "references": [
+    "/Users/tuqiang/workspace/Lost-and-Found-Admin/LFAdmin/src/scene/GameScene.ts",
+    "/Users/tuqiang/workspace/Lost-and-Found-Admin/LFAdmin/src/scene/configScene.ts"
+  ]
+}

@@ -45,15 +45,50 @@
         }
     }
 
+    var Sprite = Laya.Sprite;
+    class configScene extends Laya.Scene {
+        createChildren() {
+            super.createChildren();
+            this.loadScene("ConfigScene.scene");
+        }
+        showBGImage() {
+            let ape = new Sprite();
+            ape.pos(0, 0);
+            Laya.stage.addChild(ape);
+            ape.loadImage("comp/tempBG.jpg");
+        }
+        onAwake() {
+            this.showBGImage();
+        }
+    }
+
+    var Sprite$1 = Laya.Sprite;
     class StartScene extends Laya.Scene {
         createChildren() {
             super.createChildren();
             this.loadScene("StartScene.scene");
         }
+        showBGImage() {
+            let ape = new Sprite$1();
+            ape.pos(0, 0);
+            Laya.stage.addChild(ape);
+            ape.loadImage("comp/tempBG.jpg");
+        }
+        hiddenStartScene() {
+            this.startBtn.visible = false;
+            this.backGround.visible = false;
+            this.confBtn.visible = false;
+        }
         onAwake() {
             this.startBtn.on(Laya.Event.CLICK, this, () => {
                 const gs = new GameScene();
                 Laya.stage.addChild(gs);
+                this.hiddenStartScene();
+            });
+            this.startBtn.on(Laya.Event.CLICK, this, () => {
+                const cs = new configScene();
+                Laya.stage.addChild(cs);
+                this.hiddenStartScene();
             });
         }
     }
@@ -71,29 +106,27 @@
     }
     Aid.aidItems = ["s1"];
 
-    class Customer extends Laya.Script {
-        onStart() {
-            super.onStart();
+    class Customer extends Laya.Sprite {
+        constructor() {
+            super();
+            this.timeleft = 100;
+            this.timeleftlbl = new Laya.Label();
+            this.lostItemsp = new Laya.Sprite();
         }
         onAwake() {
-            super.onAwake();
-            console.log(this.owner);
-            console.log(this.owner.getChildByName("timleft"));
-            this.timeleft = this.owner.getChildByName("timleft");
-            this.lostItem = this.owner.getChildByName("lostItem");
-            this.timeleft.text = "耐心：90";
         }
     }
 
     class GameConfig {
-        constructor() { }
+        constructor() {
+        }
         static init() {
             var reg = Laya.ClassUtils.regClass;
             reg("scene/StartScene.ts", StartScene);
             reg("scene/GameScene.ts", GameScene);
             reg("script/Aid.ts", Aid);
             reg("script/Item.ts", Item);
-            reg("script/Customer.ts", Customer);
+            reg("prefab/Customer.ts", Customer);
         }
     }
     GameConfig.width = 1136;

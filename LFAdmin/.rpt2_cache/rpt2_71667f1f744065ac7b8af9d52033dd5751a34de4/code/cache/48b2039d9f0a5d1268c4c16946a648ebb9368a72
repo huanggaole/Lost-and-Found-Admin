@@ -1,0 +1,4 @@
+{
+  "code": "var Sprite = Laya.Sprite;\r\nexport default class configScene extends Laya.Scene {\r\n    createChildren() {\r\n        super.createChildren();\r\n        this.loadScene(\"ConfigScene.scene\");\r\n    }\r\n    showBGImage() {\r\n        let ape = new Sprite();\r\n        ape.pos(0, 0);\r\n        Laya.stage.addChild(ape);\r\n        ape.loadImage(\"comp/tempBG.jpg\");\r\n    }\r\n    onAwake() {\r\n        this.showBGImage();\r\n    }\r\n}\r\n",
+  "references": []
+}

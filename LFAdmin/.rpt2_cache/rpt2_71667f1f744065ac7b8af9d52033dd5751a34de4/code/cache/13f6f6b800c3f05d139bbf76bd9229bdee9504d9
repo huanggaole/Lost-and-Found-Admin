@@ -1,0 +1,4 @@
+{
+  "code": "export default class Customer extends Laya.Sprite {\r\n    constructor() {\r\n        super();\r\n        this.timeleft = 100;\r\n        this.timeleftlbl = new Laya.Label();\r\n        this.lostItemsp = new Laya.Sprite();\r\n    }\r\n    onAwake() {\r\n    }\r\n}\r\n",
+  "references": []
+}
