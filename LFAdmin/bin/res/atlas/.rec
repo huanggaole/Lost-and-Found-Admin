@@ -1,5 +1,6 @@
 D .
 D comp
+P 2765050C adminor.png
 P 9401CC40 blank.png
 P 316AD948 btn_close.png
 P 5B258D17 button.png
@@ -10,6 +11,7 @@ P F7B6B7D7 clip_selectBox.png
 P 63A22FAC clip_tree_arrow.png
 P D749C312 clip_tree_folder.png
 P 704C5D70 combobox.png
+P 4BC0DACD customer.png
 P D566AE8B fontClip.png
 P 38AB8F3F fontClip_num.png
 P 6EF336AE hscroll$bar.png
@@ -41,6 +43,31 @@ P 0587871F vscroll$up.png
 P 5FD17798 vscroll.png
 P DDDDFB9E vslider$bar.png
 P 01BAE7F5 vslider.png
+P 5B8AB794 保温杯1.png
+P 28F5FB49 保温杯2.png
+P 8F54B815 保温杯3.png
+P C1167390 充电线.png
+R 1F3C901B 地板.png
+P FFA3AFF8 大包1.png
+P 9D7762E2 大包2.png
+P 3CC74181 大包3.png
+P 48113B19 大衣1.png
+P 6D3D35BE 大衣2.png
+P 3050299E 大衣3.png
+P EDF35AD0 大衣4.png
+P F9A3D167 小包1.png
+P 9DB86235 小包2.png
+P D9C8761B 小包3.png
+P FB155E47 行李箱1.png
+P 40AF40C8 行李箱2.png
+P 1DC39F82 行李箱3.png
+P E7564ED0 行李箱4.png
+P 2044761E 身份证1.png
+P 82C9003A 身份证2.png
+P 206B5F99 雨伞1.png
+P 150AEAC7 雨伞2.png
+P 6648EDBC 雨伞3.png
+P 7624A955 雨伞4.png
 D sound
 R 1DC3ABD8 destroy.wav
 R FF0B6E8D hit.wav

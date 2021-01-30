@@ -8,10 +8,62 @@
         }
     }
 
+    var Customer_Status;
+    (function (Customer_Status) {
+        Customer_Status[Customer_Status["Walkin"] = 0] = "Walkin";
+        Customer_Status[Customer_Status["Lining"] = 1] = "Lining";
+        Customer_Status[Customer_Status["Waiting"] = 2] = "Waiting";
+        Customer_Status[Customer_Status["Leaving"] = 3] = "Leaving";
+    })(Customer_Status || (Customer_Status = {}));
+    class Customer extends Laya.Sprite {
+        constructor() {
+            super();
+            this.x = 268;
+            let box = this.addComponent(Laya.BoxCollider);
+            let rb = this.addComponent(Laya.RigidBody);
+            box.width = this.width = 72;
+            this.height = 40;
+            box.height = 80;
+            box.x = 0;
+            box.y = -40;
+            this.timeleft = 20;
+            this.timeleftlbl = new Laya.Label();
+            this.lostItemsp = new Laya.Sprite();
+            this.timeleftlbl.text = "耐心：" + this.timeleft;
+            this.timeleftlbl.y = -20;
+            this.timeleftlbl.x = 40;
+            this.lostItemsp.y = -40;
+            this.addChild(this.timeleftlbl);
+            this.status = Customer_Status.Walkin;
+            Customer.CustomerList.push(this);
+        }
+        destroy() {
+            super.destroy();
+            Customer.CustomerList = Customer.CustomerList.filter(item => item != this);
+        }
+        onAwake() {
+            this.loadImage("comp/customer.png");
+            this.timer.loop(500, this, () => {
+                this.timeleft -= 1;
+                this.timeleftlbl.text = "耐心：" + this.timeleft;
+                if (this.timeleft <= 0) {
+                    this.timer.clearAll(this);
+                    this.destroy();
+                }
+            });
+        }
+    }
+    Customer.CustomerList = [];
+
     class GameScene extends Laya.Scene {
         createChildren() {
             super.createChildren();
             this.loadScene("GameScene.scene");
+        }
+        createCustomer() {
+            const cust = new Customer();
+            this.customerline.push(cust);
+            this.addChild(cust);
         }
         onMouseDown() {
             if (Item.selectedItem != null) {
@@ -20,7 +72,16 @@
                 this.lasty = Laya.stage.mouseY;
             }
         }
+        onMouseUp() {
+            this.ifCanmove = false;
+            if (Item.selectedItem != null) {
+                let rigidbody = Item.selectedItem.getComponent(Laya.RigidBody);
+                rigidbody.setVelocity({ x: 0, y: 0 });
+            }
+            Item.selectedItem = null;
+        }
         onAwake() {
+            this.customerline = [];
             this.on(Laya.Event.MOUSE_DOWN, this, this.onMouseDown);
             this.on(Laya.Event.MOUSE_MOVE, this, () => {
                 if (this.ifCanmove) {
@@ -34,13 +95,16 @@
                     }
                 }
             });
-            this.on(Laya.Event.MOUSE_UP, this, () => {
-                this.ifCanmove = false;
-                if (Item.selectedItem != null) {
-                    let rigidbody = Item.selectedItem.getComponent(Laya.RigidBody);
-                    rigidbody.setVelocity({ x: 0, y: 0 });
+            this.on(Laya.Event.MOUSE_UP, this, this.onMouseUp);
+            this.on(Laya.Event.MOUSE_OUT, this, this.onMouseUp);
+            this.timer.loop(1000, this, () => {
+                console.log(Customer.CustomerList);
+                if (Customer.CustomerList.length == 0) {
+                    this.createCustomer();
                 }
-                Item.selectedItem = null;
+                else if (Math.random() < 0.1) {
+                    this.createCustomer();
+                }
             });
         }
     }
@@ -65,25 +129,12 @@
                     Aid.aidItems = Aid.aidItems.filter(item => item != Aid.aidItems[i]);
                     other.owner.destroy();
                     Item.selectedItem = null;
+                    break;
                 }
             }
         }
     }
-    Aid.aidItems = ["s1"];
-
-    class Customer extends Laya.Script {
-        onStart() {
-            super.onStart();
-        }
-        onAwake() {
-            super.onAwake();
-            console.log(this.owner);
-            console.log(this.owner.getChildByName("timleft"));
-            this.timeleft = this.owner.getChildByName("timleft");
-            this.lostItem = this.owner.getChildByName("lostItem");
-            this.timeleft.text = "耐心：90";
-        }
-    }
+    Aid.aidItems = ["bag", "cup", "plug", "handbag", "coat", "luggage", "card", "umbrella"];
 
     class GameConfig {
         constructor() { }
@@ -93,7 +144,7 @@
             reg("scene/GameScene.ts", GameScene);
             reg("script/Aid.ts", Aid);
             reg("script/Item.ts", Item);
-            reg("script/Customer.ts", Customer);
+            reg("prefab/Customer.ts", Customer);
         }
     }
     GameConfig.width = 1136;
@@ -106,7 +157,7 @@
     GameConfig.sceneRoot = "";
     GameConfig.debug = false;
     GameConfig.stat = false;
-    GameConfig.physicsDebug = true;
+    GameConfig.physicsDebug = false;
     GameConfig.exportSceneToJson = true;
     GameConfig.init();
 
