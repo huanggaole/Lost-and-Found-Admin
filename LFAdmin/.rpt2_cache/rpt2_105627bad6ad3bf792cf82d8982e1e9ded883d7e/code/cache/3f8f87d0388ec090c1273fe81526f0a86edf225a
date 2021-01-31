@@ -1,0 +1,11 @@
+{
+  "code": "import StartScene from \"./scene/StartScene\";\r\nimport GameScene from \"./scene/GameScene\";\r\nimport Aid from \"./script/Aid\";\r\nimport Item from \"./script/Item\";\r\nimport Customer from \"./prefab/Customer\";\r\nimport Table from \"./script/Table\";\r\nexport default class GameConfig {\r\n    constructor() { }\r\n    static init() {\r\n        var reg = Laya.ClassUtils.regClass;\r\n        reg(\"scene/StartScene.ts\", StartScene);\r\n        reg(\"scene/GameScene.ts\", GameScene);\r\n        reg(\"script/Aid.ts\", Aid);\r\n        reg(\"script/Table.ts\", Table);\r\n        reg(\"script/Item.ts\", Item);\r\n        reg(\"prefab/Customer.ts\", Customer);\r\n    }\r\n}\r\nGameConfig.width = 1136;\r\nGameConfig.height = 640;\r\nGameConfig.scaleMode = \"showall\";\r\nGameConfig.screenMode = \"none\";\r\nGameConfig.alignV = \"top\";\r\nGameConfig.alignH = \"left\";\r\nGameConfig.startScene = \"GameScene.scene\";\r\nGameConfig.sceneRoot = \"\";\r\nGameConfig.debug = false;\r\nGameConfig.stat = false;\r\nGameConfig.physicsDebug = false;\r\nGameConfig.exportSceneToJson = true;\r\nGameConfig.init();\r\n",
+  "references": [
+    "/Users/huanggaole/Lost-and-Found-Admin/LFAdmin/src/scene/StartScene.ts",
+    "/Users/huanggaole/Lost-and-Found-Admin/LFAdmin/src/scene/GameScene.ts",
+    "/Users/huanggaole/Lost-and-Found-Admin/LFAdmin/src/script/Aid.ts",
+    "/Users/huanggaole/Lost-and-Found-Admin/LFAdmin/src/script/Item.ts",
+    "/Users/huanggaole/Lost-and-Found-Admin/LFAdmin/src/prefab/Customer.ts",
+    "/Users/huanggaole/Lost-and-Found-Admin/LFAdmin/src/script/Table.ts"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "code": "import Item from \"./Item\";\r\nimport Customer from \"../prefab/Customer\";\r\nexport default class Aid extends Laya.Script {\r\n    onTriggerEnter(other) {\r\n        for (let i = 0; i < Aid.aidItems.length; i++) {\r\n            if (other.owner.name == Aid.aidItems[i]) {\r\n                for (let j = 0; j < Customer.CustomerList.length; j++) {\r\n                    if (Customer.CustomerList[j].searchfor == other.owner.name) {\r\n                        Customer.CustomerList[j].destroy();\r\n                        console.log(\"after:\" + Customer.CustomerList);\r\n                    }\r\n                }\r\n                Aid.aidItems = Aid.aidItems.filter(item => item != Aid.aidItems[i]);\r\n                other.owner.destroy();\r\n                Item.selectedItem = null;\r\n                break;\r\n            }\r\n        }\r\n    }\r\n}\r\nAid.aidItems = [];\r\n",
+  "references": [
+    "/Users/huanggaole/Lost-and-Found-Admin/LFAdmin/src/script/Item.ts",
+    "/Users/huanggaole/Lost-and-Found-Admin/LFAdmin/src/prefab/Customer.ts"
+  ]
+}

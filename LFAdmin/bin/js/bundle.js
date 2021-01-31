@@ -8,6 +8,26 @@
         }
     }
 
+    class Aid extends Laya.Script {
+        onTriggerEnter(other) {
+            for (let i = 0; i < Aid.aidItems.length; i++) {
+                if (other.owner.name == Aid.aidItems[i]) {
+                    for (let j = 0; j < Customer.CustomerList.length; j++) {
+                        if (Customer.CustomerList[j].searchfor == other.owner.name) {
+                            Customer.CustomerList[j].destroy();
+                            console.log("after:" + Customer.CustomerList);
+                        }
+                    }
+                    Aid.aidItems = Aid.aidItems.filter(item => item != Aid.aidItems[i]);
+                    other.owner.destroy();
+                    Item.selectedItem = null;
+                    break;
+                }
+            }
+        }
+    }
+    Aid.aidItems = [];
+
     var Customer_Status;
     (function (Customer_Status) {
         Customer_Status[Customer_Status["Walkin"] = 0] = "Walkin";
@@ -16,38 +36,51 @@
         Customer_Status[Customer_Status["Leaving"] = 3] = "Leaving";
     })(Customer_Status || (Customer_Status = {}));
     class Customer extends Laya.Sprite {
-        constructor() {
+        constructor(_main) {
             super();
-            this.x = 268;
+            this.main = _main;
+            this.x = 240;
             let box = this.addComponent(Laya.BoxCollider);
             let rb = this.addComponent(Laya.RigidBody);
-            box.width = this.width = 72;
-            this.height = 40;
-            box.height = 80;
+            box.width = this.width = 150;
+            this.height = 150;
+            box.height = 150;
             box.x = 0;
-            box.y = -40;
+            box.y = 0;
+            let rdmitem = Math.floor(Math.random() * this.main.loseItems.length);
+            this.searchfor = this.main.loseItems[rdmitem];
+            let searchsprite = this.main.getChildByName(this.searchfor);
+            this.main.loseItems = this.main.loseItems.filter(item => item != this.searchfor);
             this.timeleft = 20;
             this.timeleftlbl = new Laya.Label();
             this.lostItemsp = new Laya.Sprite();
-            this.timeleftlbl.text = "耐心：" + this.timeleft;
-            this.timeleftlbl.y = -20;
-            this.timeleftlbl.x = 40;
-            this.lostItemsp.y = -40;
+            this.lostItemsp.width = 50;
+            this.lostItemsp.height = 50;
+            this.lostItemsp.texture = searchsprite.texture;
+            this.timeleftlbl.text = "patience：" + this.timeleft;
+            this.timeleftlbl.y = 0;
+            this.timeleftlbl.x = 60;
+            this.lostItemsp.y = 0;
             this.addChild(this.timeleftlbl);
+            this.addChild(this.lostItemsp);
             this.status = Customer_Status.Walkin;
             Customer.CustomerList.push(this);
         }
         destroy() {
+            Aid.aidItems = Aid.aidItems.filter(item => item != this.searchfor);
             super.destroy();
             Customer.CustomerList = Customer.CustomerList.filter(item => item != this);
+            this.main.updateScore(this.timeleft);
         }
         onAwake() {
             this.loadImage("comp/customer.png");
             this.timer.loop(500, this, () => {
                 this.timeleft -= 1;
-                this.timeleftlbl.text = "耐心：" + this.timeleft;
+                this.timeleftlbl.text = "patience：" + this.timeleft;
                 if (this.timeleft <= 0) {
                     this.timer.clearAll(this);
+                    this.main.updateHP(-1);
+                    this.main.loseItems.push(this.searchfor);
                     this.destroy();
                 }
             });
@@ -61,8 +94,7 @@
             this.loadScene("GameScene.scene");
         }
         createCustomer() {
-            const cust = new Customer();
-            this.customerline.push(cust);
+            const cust = new Customer(this);
             this.addChild(cust);
         }
         onMouseDown() {
@@ -80,8 +112,21 @@
             }
             Item.selectedItem = null;
         }
+        updateHP(changevalue) {
+            this.HPvalue += changevalue;
+            this.HP.text = "HP: " + this.HPvalue;
+            if (this.HPvalue <= 0) {
+                alert("动作太慢被顾客投诉啦！游戏失败！\nYou are too slow that many customers have complained, you lose the game!");
+                this.timer.clearAll(this);
+                this.destroy();
+            }
+        }
+        updateScore(changevalue) {
+            this.Scorevalue += changevalue;
+            this.score.value = this.Scorevalue + "";
+        }
         onAwake() {
-            this.customerline = [];
+            this.loseItems = ["bag", "cup", "plug", "handbag", "coat", "luggage", "card", "umbrella"];
             this.on(Laya.Event.MOUSE_DOWN, this, this.onMouseDown);
             this.on(Laya.Event.MOUSE_MOVE, this, () => {
                 if (this.ifCanmove) {
@@ -97,8 +142,20 @@
             });
             this.on(Laya.Event.MOUSE_UP, this, this.onMouseUp);
             this.on(Laya.Event.MOUSE_OUT, this, this.onMouseUp);
+            this.HPvalue = 3;
+            this.Scorevalue = 0;
+            this.updateHP(0);
+            this.updateScore(0);
             this.timer.loop(1000, this, () => {
-                console.log(Customer.CustomerList);
+                if (this.loseItems.length == 0 && Customer.CustomerList.length == 0) {
+                    alert("所有的失物都归还给失主了，真好！\n你本局游戏得分为：" + this.Scorevalue + "\n" +
+                        "Well Done! All the lost things have found their owner!\n You got " + this.Scorevalue + " score in this game.");
+                    this.timer.clearAll(this);
+                    this.destroy();
+                }
+                if (this.loseItems.length == 0) {
+                    return;
+                }
                 if (Customer.CustomerList.length == 0) {
                     this.createCustomer();
                 }
@@ -119,22 +176,18 @@
                 const gs = new GameScene();
                 Laya.stage.addChild(gs);
             });
+            this.intro.text = "这里是某高铁站，春运期间有大量旅客会将物品落在列车上，我们每天都能收到大量来自各个列车的遗失物品。你的任务就是帮助我们，在来领遗失物品的乘客等得不耐烦开始打投诉电话之前，从仓库中把他们遗失的物品找到并及时拿出来还给他们。";
+            this.intro.text += "\n\n";
+            this.intro.text += "This is a railway station. During the Spring Festival, a large number of passengers will drop their belongings on the train. We can receive a large number of lost belongings from various trains every day. Your task is to help us find the lost items from the warehouse and return them to their owners before they ran out of their patience and start a complaint call.";
         }
     }
 
-    class Aid extends Laya.Script {
+    class Table extends Laya.Script {
         onTriggerEnter(other) {
-            for (let i = 0; i < Aid.aidItems.length; i++) {
-                if (other.owner.name == Aid.aidItems[i]) {
-                    Aid.aidItems = Aid.aidItems.filter(item => item != Aid.aidItems[i]);
-                    other.owner.destroy();
-                    Item.selectedItem = null;
-                    break;
-                }
-            }
+            Aid.aidItems.push(other.owner.searchfor);
+            console.log(Aid.aidItems);
         }
     }
-    Aid.aidItems = ["bag", "cup", "plug", "handbag", "coat", "luggage", "card", "umbrella"];
 
     class GameConfig {
         constructor() { }
@@ -143,6 +196,7 @@
             reg("scene/StartScene.ts", StartScene);
             reg("scene/GameScene.ts", GameScene);
             reg("script/Aid.ts", Aid);
+            reg("script/Table.ts", Table);
             reg("script/Item.ts", Item);
             reg("prefab/Customer.ts", Customer);
         }

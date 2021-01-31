@@ -9,7 +9,14 @@ export default class GameScene extends Laya.Scene{
     private lasty:number;
     private lasttime;
 
-    private customerline:Customer[];
+    private HPvalue:number;
+    private Scorevalue:number;
+
+    private HP:Laya.Label;
+    private score:Laya.FontClip;
+
+    public loseItems:string[];
+
 
     createChildren(){
         super.createChildren();
@@ -17,8 +24,7 @@ export default class GameScene extends Laya.Scene{
     }
 
     createCustomer(){
-        const cust = new Customer();
-        this.customerline.push(cust);
+        const cust = new Customer(this);
         this.addChild(cust);
     }
 
@@ -38,8 +44,24 @@ export default class GameScene extends Laya.Scene{
         }
         Item.selectedItem = null;
     }
+
+    updateHP(changevalue){
+        this.HPvalue += changevalue;
+        this.HP.text = "HP: "+this.HPvalue;
+        if(this.HPvalue <= 0){
+            alert("动作太慢被顾客投诉啦！游戏失败！\nYou are too slow that many customers have complained, you lose the game!");
+            // Laya.stage.removeSelf();
+            this.timer.clearAll(this);
+            this.destroy();
+        }
+    }
+
+    updateScore(changevalue){
+        this.Scorevalue += changevalue;
+        this.score.value = this.Scorevalue + "";
+    }
     onAwake(){
-        this.customerline = [];
+        this.loseItems = ["bag","cup","plug","handbag","coat","luggage","card","umbrella"];
         this.on(Laya.Event.MOUSE_DOWN, this, this.onMouseDown);
         
         this.on(
@@ -59,9 +81,23 @@ export default class GameScene extends Laya.Scene{
         this.on(Laya.Event.MOUSE_UP, this, this.onMouseUp)
         this.on(Laya.Event.MOUSE_OUT, this, this.onMouseUp)
 
+        this.HPvalue = 3;
+        this.Scorevalue = 0;
+        this.updateHP(0);
+        this.updateScore(0);
+
         // 每100帧有1/10的概率自动生成一个客人
         this.timer.loop(1000,this,()=>{
-            console.log(Customer.CustomerList);
+            if(this.loseItems.length == 0 && Customer.CustomerList.length == 0){
+                alert("所有的失物都归还给失主了，真好！\n你本局游戏得分为：" + this.Scorevalue + "\n" +
+                    "Well Done! All the lost things have found their owner!\n You got " + this.Scorevalue + " score in this game.");
+                this.timer.clearAll(this);
+                this.destroy();
+            }
+
+            if(this.loseItems.length == 0){
+                return;
+            }
             if(Customer.CustomerList.length == 0){
                 this.createCustomer();
             }else if(Math.random() < 0.1){

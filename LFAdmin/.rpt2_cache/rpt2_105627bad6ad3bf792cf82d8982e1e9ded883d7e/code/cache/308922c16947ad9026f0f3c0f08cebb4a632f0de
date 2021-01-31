@@ -1,0 +1,7 @@
+{
+  "code": "import Aid from \"./Aid\";\r\nexport default class Table extends Laya.Script {\r\n    onTriggerEnter(other) {\r\n        Aid.aidItems.push(other.owner.searchfor);\r\n        console.log(Aid.aidItems);\r\n    }\r\n}\r\n",
+  "references": [
+    "/Users/huanggaole/Lost-and-Found-Admin/LFAdmin/src/script/Aid.ts",
+    "/Users/huanggaole/Lost-and-Found-Admin/LFAdmin/src/prefab/Customer.ts"
+  ]
+}
